@@ -10,6 +10,14 @@ const app = express();
 const port = process.env.PORT || 3001;
 const databaseURL = process.env.DATABASE_URL || "mongodb://localhost/digital-chat";
 
+app.use(cors({
+    origin:[process.env.ORIGIN],
+    methods:["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials:true,
+}))
+app.use(cookieParser())
+app.use(express.json())
+
 mongoose.connect(databaseURL)
   .then(() => console.log("DB connection successfully"))
   .catch((err) => console.log("DB connection error:", err.message));
