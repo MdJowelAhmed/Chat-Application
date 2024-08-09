@@ -5,11 +5,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/ta
 import { Input } from '../../components/ui/input'
 import { Button } from '../../components/ui/button'
 import { toast } from 'sonner'
+import { apiClient } from '@/lib/api-client'
+import { SIGNUP_ROUTE,LOGIN_ROUTE } from '@/utils/constands'
+// import { LOGIN_ROUTE } from 'src/utils/constands'
 
 const Auth = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
+
+  const validateLogin=()=>{
+    if(!email.length){
+      toast.error("Email is required")
+      return false
+    }
+    if(!password.length){
+      toast.error("Password is required")
+      return false
+    }
+    return true
+  }
+
+  const handleLogin = async() => {
+    if(validateLogin()){
+      const res=await apiClient.post(LOGIN_ROUTE,{email,password},
+        {withCredentials:true}
+      )
+      console.log({res})
+    }
+  }
 
   const validateSignup =()=>{
     if(!email.length){
@@ -18,20 +42,22 @@ const Auth = () => {
     }
     if(!password.length){
       toast.error("Password is required")
+      return false
     }
     if(password !== confirmPass){
       toast.error("password and confirm password should be same")
+      return false
     }
     return true
   }
 
-  const handleLogin = () => {
 
-  }
-
-  const handleRegister = () => {
+  const handleRegister = async() => {
     if(validateSignup()){
-      alert('done')
+      const res=await apiClient.post(SIGNUP_ROUTE,{email,password},
+        {withCredentials:true}
+      )
+      console.log({res})
     }
   }
   return (
