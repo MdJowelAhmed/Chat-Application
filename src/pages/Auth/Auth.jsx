@@ -4,17 +4,35 @@ import Victory from "../../assets/victory.svg"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { Input } from '../../components/ui/input'
 import { Button } from '../../components/ui/button'
+import { toast } from 'sonner'
 
 const Auth = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
 
+  const validateSignup =()=>{
+    if(!email.length){
+      toast.error("Email is required")
+      return false
+    }
+    if(!password.length){
+      toast.error("Password is required")
+    }
+    if(password !== confirmPass){
+      toast.error("password and confirm password should be same")
+    }
+    return true
+  }
+
   const handleLogin = () => {
 
   }
-  const handleRegister = () => {
 
+  const handleRegister = () => {
+    if(validateSignup()){
+      alert('done')
+    }
   }
   return (
     <div className='h-[100vh] w-[100vw] flex items-center justify-center'>
@@ -49,7 +67,7 @@ const Auth = () => {
           </div>
         </div>
         <div className='hidden lg:flex justify-center items-center'>
-          <img src={Login} alt="" className='h-[480px] p-5 rounded-md'/>
+          <img src={Login} alt="" className='h-[480px] p-5 rounded-md' />
         </div>
       </div>
     </div>
