@@ -7,9 +7,11 @@ import { Button } from '../../components/ui/button'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
 import { SIGNUP_ROUTE,LOGIN_ROUTE } from '@/utils/constands'
+import { useNavigate } from 'react-router-dom'
 // import { LOGIN_ROUTE } from 'src/utils/constands'
 
 const Auth = () => {
+  const navigate=useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
@@ -31,6 +33,10 @@ const Auth = () => {
       const res=await apiClient.post(LOGIN_ROUTE,{email,password},
         {withCredentials:true}
       )
+      if(res.data.user.id){
+        if(res.data.user.profileSetUp) navigate('/chat')
+          else navigate("/profile")
+      }
       console.log({res})
     }
   }
@@ -57,6 +63,9 @@ const Auth = () => {
       const res=await apiClient.post(SIGNUP_ROUTE,{email,password},
         {withCredentials:true}
       )
+      if(res.status===201){
+        navigate('/profile')
+      }
       console.log({res})
     }
   }
