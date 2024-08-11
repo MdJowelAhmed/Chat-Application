@@ -4,7 +4,14 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Auth from './pages/Auth/Auth';
 import Chat from './pages/Chat/Chat';
 import Profile from './pages/Profile/Profile';
+import { useAppStore } from './store/store';
 
+
+const privateRoute=({children})=>{
+  const {userInfo}=useAppStore();
+  const isAuthenticated = !!userInfo;
+  return isAuthenticated ? children : <Navigate to="/auth"/>
+}
 
 const App = () => {
   return (

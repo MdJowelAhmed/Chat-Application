@@ -6,51 +6,55 @@ import { Input } from '../../components/ui/input'
 import { Button } from '../../components/ui/button'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
-import { SIGNUP_ROUTE,LOGIN_ROUTE } from '@/utils/constands'
+import { SIGNUP_ROUTE, LOGIN_ROUTE } from '@/utils/constands'
 import { useNavigate } from 'react-router-dom'
+import { useAppStore } from '@/store/store'
 // import { LOGIN_ROUTE } from 'src/utils/constands'
 
 const Auth = () => {
-  const navigate=useNavigate()
+  const {setUserInfo}=useAppStore()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
 
-  const validateLogin=()=>{
-    if(!email.length){
+  const validateLogin = () => {
+    if (!email.length) {
       toast.error("Email is required")
       return false
     }
-    if(!password.length){
+    if (!password.length) {
       toast.error("Password is required")
       return false
     }
     return true
   }
 
-  const handleLogin = async() => {
-    if(validateLogin()){
-      const res=await apiClient.post(LOGIN_ROUTE,{email,password},
-        {withCredentials:true}
+  const handleLogin = async () => {
+    if (validateLogin()) {
+      const res = await apiClient.post(LOGIN_ROUTE, { email, password },
+        { withCredentials: true }
       )
-      if(res.data.user.id){
-        if(res.data.user.profileSetUp) navigate('/chat')
-          else navigate("/profile")
+      if (res.data.user.id) {
+        setUserInfo(res.data.user)
+        if (res.data.user.profileSetUp) navigate('/chat')
+        else navigate("/profile")
+        
       }
-      console.log({res})
+      console.log({ res })
     }
   }
 
-  const validateSignup =()=>{
-    if(!email.length){
+  const validateSignup = () => {
+    if (!email.length) {
       toast.error("Email is required")
       return false
     }
-    if(!password.length){
+    if (!password.length) {
       toast.error("Password is required")
       return false
     }
-    if(password !== confirmPass){
+    if (password !== confirmPass) {
       toast.error("password and confirm password should be same")
       return false
     }
@@ -58,15 +62,16 @@ const Auth = () => {
   }
 
 
-  const handleRegister = async() => {
-    if(validateSignup()){
-      const res=await apiClient.post(SIGNUP_ROUTE,{email,password},
-        {withCredentials:true}
+  const handleRegister = async () => {
+    if (validateSignup()) {
+      const res = await apiClient.post(SIGNUP_ROUTE, { email, password },
+        { withCredentials: true }
       )
-      if(res.status===201){
+      if (res.status === 201) {
+        setUserInfo(res.data.user)
         navigate('/profile')
       }
-      console.log({res})
+      console.log({ res })
     }
   }
   return (
@@ -81,7 +86,7 @@ const Auth = () => {
             <p className='text-center font-medium'>Fill-up the all input file for using best chat app</p>
           </div>
           <div className='flex items-center justify-center w-full'>
-            <Tabs className='w-3/4'>
+            <Tabs className='w-3/4' defaultValue='login'>
               <TabsList className='bg-transparent rounded-none w-full'>
                 <TabsTrigger value="login" className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300">Login</TabsTrigger>
                 <TabsTrigger value="register" className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300"> Register</TabsTrigger>
